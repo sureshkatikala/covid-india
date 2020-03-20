@@ -2,8 +2,17 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Map from './Map.js'
+const cheerio = require('cheerio')
+const axios = require('axios')
 
 function App() {
+
+  axios.get('https://www.mohfw.gov.in/').then((response) => {
+  // Load the web page source code into a cheerio instance
+  const $ = cheerio.load(response.data)
+  console.log($)
+})
+
   return (
     <div className="App">
       {/* <header className="App-header">
