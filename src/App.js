@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Map from './Map.js'
-const cheerio = require('cheerio')
-const axios = require('axios')
-
 class App extends React.Component {
   // const [statesData, setObj] = useState()
   constructor(props) {
