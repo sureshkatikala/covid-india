@@ -5,7 +5,7 @@ import Map from './Map.js'
 const cheerio = require('cheerio')
 const axios = require('axios')
 
-class App extends React.Component{
+class App extends React.Component {
   // const [statesData, setObj] = useState()
   constructor(props) {
     super(props);
@@ -15,41 +15,54 @@ class App extends React.Component{
   }
   // let scrapedData = [];
   // useEffect(() => {
-    componentDidMount() {
-      let scrapedData = []
-
-    axios.get('https://www.mohfw.gov.in/').then((response) => {
-      // Load the web page source code into a cheerio instance
-      const $ = cheerio.load(response.data)
-      // $("body > div:nth-child(3) > div > div > div > ol > strong > strong > strong > strong > div > table > tbody > tr > td").each((index, element) => {
-      //   console.log($(element).text());
-      // document.querySelector('body > div:nth-child(3) > div > div > div > ol > strong > strong > strong > strong > div > table > tbody > tr:nth-child(1)')
-      // });
-      $('body > div:nth-child(3) > div > div > div > ol > strong > strong > strong > strong > div > table > tbody > tr').each((index, element) => {
-        const tds = $(element).find("td");
-        const serial = $(tds[0]).text();
-        const stateName = $(tds[1]).text();
-        const indConfirmed = $(tds[2]).text();
-        const foreignConfirmed = $(tds[3]).text();
-        const cured = $(tds[4]).text();
-        const deaths = $(tds[5]).text();
-        const tableRow = { serial, stateName, indConfirmed, foreignConfirmed, cured, deaths };
-        scrapedData.push(tableRow);
-      });
-      console.log(scrapedData)
-      this.setState({statesData : scrapedData})
-      // return scrapedData
+  componentDidMount() {
+    let scrapedData = []
+    fetch("https://corona-virus-world-and-india-data.p.rapidapi.com/api_india", {
+      "method": "GET",
+      "headers": {
+        "x-rapidapi-host": "corona-virus-world-and-india-data.p.rapidapi.com",
+        "x-rapidapi-key": "a5459ef76emsha1ac71d39f2b86ap12c441jsn4644e84dc586"
+      }
     })
-      // .then(setObj)
-  // }, [])
-    }
-render() {
-  return (
-    <div className="App">
-      <Map statesData={this.state.statesData} />
-    </div>
-  );
-}
+      .then(response => {
+        return response.json()
+      })
+.then(response => {
+        console.log(response);
+        console.log(response.state_wise)
+        response.state_wise["Jammu & Kashmir"] = response.state_wise["Jammu and Kashmir"]        
+        // Object.keys(response.state_wise["Jammu & Kashmir"]).forEach(data => {
+
+        // })
+        let jk = response.state_wise["Jammu and Kashmir"]
+        let l = response.state_wise["Ladakh"]
+        response.state_wise["Jammu & Kashmir"] = {
+          active: parseInt(jk.active) + parseInt(l.active),
+          confirmed: parseInt(jk.confirmed) + parseInt(l.confirmed),
+          deaths: jk.deaths + l.deaths,
+          deltaconfirmed: jk.deltaconfirmed + l.deltaconfirmed,
+          deltadeaths: jk.deltadeaths + l.deltadeaths,
+          deltarecovered: jk.deltarecovered + l.deltarecovered,
+          recovered: jk.recovered + l.recovered
+        }
+        Object.keys(response.state_wise).forEach(el => {
+          let stateName = el
+          let confirmed = response.state_wise[el].confirmed
+          scrapedData.push({ stateName, confirmed })
+        })
+        this.setState({ statesData: scrapedData })
+      })
+          .catch(err => {
+            console.log(err);
+          });
+  }
+  render() {
+    return (
+      <div className="App">
+        <Map statesData={this.state.statesData} />
+      </div>
+    );
+  }
 }
 
 export default App;

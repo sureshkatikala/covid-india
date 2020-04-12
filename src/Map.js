@@ -7,13 +7,13 @@ const Map = ({statesData}) => {
   if(statesData.length >0) {
   statesData.forEach(el => {
     regionDataObject[el.stateName] = {
-      value : el.indConfirmed
+      value : el.confirmed
     }
   })
-  regionDataObject.Telangana = regionDataObject.Telengana
-  console.log(regionDataObject)
-  regionDataObject['Jammu & Kashmir'] = {}
-  regionDataObject['Jammu & Kashmir'].value = parseInt(regionDataObject['Union Territory of Jammu and Kashmir'].value) + parseInt(regionDataObject['Union Territory of Ladakh'].value)
+  // regionDataObject.Telangana = regionDataObject.Telengana
+  // console.log(regionDataObject)
+  // regionDataObject['Jammu & Kashmir'] = {}
+  // regionDataObject['Jammu & Kashmir'].value = parseInt(regionDataObject['Union Territory of Jammu and Kashmir'].value) + parseInt(regionDataObject['Union Territory of Ladakh'].value)
 
 
 }
